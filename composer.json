@@ -110,6 +110,9 @@
     "config": {
         "audit": {
             "ignore": ["PKSA-csyb-yc4p-mnbs"]
+        },
+        "allow-plugins": {
+            "kylekatarnls/update-helper": true
         }
     }
 }
