@@ -14,6 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         php: ['8.0', '8.1', '8.4', '8.5']
+        prefer-lowest: [false, true]
 
     services:
       redis:
@@ -53,6 +54,7 @@ jobs:
       - name: Download dependencies
         env:
           PHP_VERSION: ${{ matrix.php }}
+          COMPOSER_PREFER_LOWEST: ${{ matrix.prefer-lowest }}
         run: |
           CURRENT_DIR=$(pwd)
           ok=0
@@ -65,6 +67,9 @@ jobs:
             localExit=0
             if [ $PHP_VERSION = '8.0' ]; then
               COMPOSER_OPTIONS=' --ignore-platform-req=php'
+            fi
+            if [ "$COMPOSER_PREFER_LOWEST" = "true" ]; then
+              COMPOSER_OPTIONS="$COMPOSER_OPTIONS --prefer-lowest"
             fi
             composer update --no-interaction --prefer-dist --optimize-autoloader $COMPOSER_OPTIONS || localExit=1
             ok=$(( $localExit || $ok ))
