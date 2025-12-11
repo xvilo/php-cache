@@ -13,7 +13,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['7.4', '8.0', '8.1']
+        php: ['8.0', '8.1', '8.3', '8.4', '8.5']
+        prefer-lowest: [false, true]
 
     services:
       redis:
@@ -21,7 +22,7 @@ jobs:
         ports:
           - 6379:6379
       redis-cluster:
-        image: grokzen/redis-cluster:5.0.4
+        image: grokzen/redis-cluster:7.0.7
         ports:
           - 7000:7000
           - 7001:7001
@@ -53,6 +54,7 @@ jobs:
       - name: Download dependencies
         env:
           PHP_VERSION: ${{ matrix.php }}
+          COMPOSER_PREFER_LOWEST: ${{ matrix.prefer-lowest }}
         run: |
           CURRENT_DIR=$(pwd)
           ok=0
@@ -65,6 +67,9 @@ jobs:
             localExit=0
             if [ $PHP_VERSION = '8.0' ]; then
               COMPOSER_OPTIONS=' --ignore-platform-req=php'
+            fi
+            if [ "$COMPOSER_PREFER_LOWEST" = "true" ]; then
+              COMPOSER_OPTIONS="$COMPOSER_OPTIONS --prefer-lowest"
             fi
             composer update --no-interaction --prefer-dist --optimize-autoloader $COMPOSER_OPTIONS || localExit=1
             ok=$(( $localExit || $ok ))

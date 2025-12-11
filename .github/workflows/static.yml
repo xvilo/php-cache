@@ -10,12 +10,16 @@ jobs:
   phpstan:
     name: PHPStan
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.0', '8.1', '8.3', '8.4', '8.5']
 
     steps:
       - name: Set up PHP
         uses: shivammathur/setup-php@2.7.0
         with:
-          php-version: '7.4'
+          php-version: ${{ matrix.php }}
           coverage: none
 
       - name: Checkout code
@@ -26,19 +30,23 @@ jobs:
           composer update --no-interaction --prefer-dist --optimize-autoloader
 
       - name: PHPStan
-        uses: docker://oskarstark/phpstan-ga:0.12.48
+        uses: php-actions/phpstan@v3
         with:
-          entrypoint: /composer/vendor/bin/phpstan
-          args: analyze --no-progress
+          php_version: ${{ matrix.php }}
 
   psalm:
     name: Psalm
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.0', '8.1', '8.3']
+
     steps:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
+          php-version: ${{ matrix.php }}
           extensions: redis, memcached, apcu
           tools: composer:v2
 
@@ -47,7 +55,7 @@ jobs:
 
       - name: Download dependencies
         run: |
-          composer require --dev --no-update psalm/phar:3.16
+          composer require --dev --no-update psalm/phar:5.26
           composer update --no-interaction --prefer-dist
 
       - name: Psalm
