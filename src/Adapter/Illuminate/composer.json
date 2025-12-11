@@ -41,6 +41,11 @@
         "mockery/mockery": "^1.0",
         "phpunit/phpunit": "^7.5.20 || ^9.5.10"
     },
+    "config": {
+        "audit": {
+            "block-insecure": false
+        }
+    },
     "provide": {
         "psr/cache-implementation": "^1.0",
         "psr/simple-cache-implementation": "^1.0"
