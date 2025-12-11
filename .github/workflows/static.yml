@@ -30,10 +30,9 @@ jobs:
           composer update --no-interaction --prefer-dist --optimize-autoloader
 
       - name: PHPStan
-        uses: docker://oskarstark/phpstan-ga:0.12.48
+        uses: php-actions/phpstan@v3
         with:
-          entrypoint: /composer/vendor/bin/phpstan
-          args: analyze --no-progress
+          php_version: ${{ matrix.php }}
 
   psalm:
     name: Psalm
