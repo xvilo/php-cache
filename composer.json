@@ -106,5 +106,10 @@
         "branch-alias": {
             "dev-master": "1.1-dev"
         }
+    },
+    "config": {
+        "audit": {
+            "ignore": ["PKSA-csyb-yc4p-mnbs"]
+        }
     }
 }
